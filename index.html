@@ -1,1 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
 
+<title>CRUD Kuliner</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-orange-100 p-10">
+
+<div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+
+<h1 class="text-2xl font-bold mb-4 text-center">
+CRUD Data Kuliner
+</h1>
+
+<input id="nama" placeholder="Nama Makanan"
+class="border p-2 w-full mb-2">
+
+<input id="kategori" placeholder="Kategori (Makanan / Minuman)"
+class="border p-2 w-full mb-2">
+
+<input id="harga" placeholder="Harga"
+class="border p-2 w-full mb-2">
+
+<button onclick="tambahData()"
+class="bg-orange-500 text-white px-4 py-2 rounded w-full">
+Tambah Menu
+</button>
+
+<table class="table-auto w-full mt-6">
+
+<thead>
+<tr class="bg-orange-200">
+
+<th class="p-2">Nama</th>
+<th class="p-2">Kategori</th>
+<th class="p-2">Harga</th>
+<th class="p-2">Aksi</th>
+
+</tr>
+</thead>
+
+<tbody id="dataKuliner"></tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const api = "/makanan"
+
+function loadData(){
+
+fetch(api)
+.then(res=>res.json())
+.then(data=>{
+
+let html=""
+
+data.forEach(m=>{
+
+html += `
+<tr>
+
+<td class="border p-2">${m.nama}</td>
+<td class="border p-2">${m.kategori}</td>
+<td class="border p-2">Rp ${m.harga}</td>
+
+<td class="border p-2">
+
+<button onclick="hapusData(${m.id})"
+class="bg-red-500 text-white px-2 py-1 rounded">
+Hapus
+</button>
+
+</td>
+
+</tr>
+`
+
+})
+
+document.getElementById("dataKuliner").innerHTML = html
+
+})
+
+}
+
+function tambahData(){
+
+const nama = document.getElementById("nama").value
+const kategori = document.getElementById("kategori").value
+const harga = document.getElementById("harga").value
+
+fetch(api,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({nama,kategori,harga})
+})
+.then(()=>loadData())
+
+}
+
+function hapusData(id){
+
+fetch(api+"/"+id,{
+method:"DELETE"
+})
+.then(()=>loadData())
+
+}
+
+loadData()
+
+</script>
+
+</body>
+</html>
